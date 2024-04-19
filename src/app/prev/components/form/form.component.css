@@ -1,6 +1,0 @@
-.sticky-header {
-  position: sticky;
-  right: 2px; /* Ajusta la distancia del borde derecho según sea necesario */
-  z-index: 1; /* Asegura que esté por encima del contenido desplazable */
-  background-color: #ffffff; /* Ajusta el color de fondo según sea necesario */
-}

@@ -1,5 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ValidationService } from '../../services/validation.service';
+import { Router } from '@angular/router';
 
 interface Gusto {
   nombre: string;
@@ -10,7 +11,6 @@ interface Gusto {
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
-  styleUrl: './form.component.css',
 })
 export class FormComponent {
   // @ViewChild(FormComponent) formComponent!: FormComponent;
@@ -27,14 +27,32 @@ export class FormComponent {
   telefono: string = '';
 
   _gustos: Gusto[] = [
-    { nombre: 'Chocolate', porcentaje: 50, esEditable: false },
-    { nombre: 'Vainilla', porcentaje: 30, esEditable: false },
-    { nombre: 'Fresa', porcentaje: 20, esEditable: false },
+
   ];
 
   originalGustos: Gusto[] = [];
 
-  constructor(private validationService: ValidationService) {}
+  constructor(
+    private router: Router,
+    private validationService: ValidationService,
+  ) {}
+
+  onSubmit() {
+    if (
+      !this.validarNombre() ||
+      !this.validarCorreo() ||
+      !this.validarTelefono()
+    ) return;
+
+    this.router.navigate(['/card'], {
+      queryParams: {
+        nombre: this.nombre,
+        correo: this.correo,
+        telefono: this.telefono,
+        gustos: JSON.stringify(this._gustos),
+      },
+    });
+  }
 
   agregarGusto() {
     let value = this.tagInput.nativeElement.value;
@@ -45,17 +63,9 @@ export class FormComponent {
     if (porcentaje < 0 || porcentaje > 100) return;
     if (this._gustos.find((gusto) => gusto.nombre === value)) return;
     this._gustos.unshift({ nombre: value, porcentaje, esEditable: false });
+    this.tagInput.nativeElement.value = '';
+    this.porcentajeInput.nativeElement.value = '';
   }
-
-  onSubmit() {
-    // event.preventDefault();
-    this.validarNombre();
-    this.validarCorreo();
-    this.validarTelefono();
-    // this.validarNombre();
-  }
-
-
 
   onEdit(gusto: Gusto) {
     gusto.esEditable = !gusto.esEditable;
@@ -83,16 +93,19 @@ export class FormComponent {
     const error = this.validationService.nameError(this.nombre);
     console.log(error);
     this.mostrarError(error, this.errorNombre.nativeElement);
+    return error === this.validationService.NO_ERROR;
   }
 
   validarCorreo() {
     const error = this.validationService.emailError(this.correo);
     this.mostrarError(error, this.errorCorreo.nativeElement);
+    return error === this.validationService.NO_ERROR;
   }
 
   validarTelefono() {
     const error = this.validationService.telefonoError(this.telefono);
     this.mostrarError(error, this.errorTelefono.nativeElement);
+    return error === this.validationService.NO_ERROR;
   }
   mostrarError(err: string, error: HTMLParagraphElement) {
     if (err !== this.validationService.NO_ERROR) {
