@@ -5,18 +5,18 @@ import {CardPageComponent} from "./prev/pages/card-page/card-page.component";
 
 const routes: Routes = [
   {
-    path: 'form',
-    component: FormPageComponent,
-  },
-  {
     path: 'card',
     component: CardPageComponent,
   },
   {
     path: '',
-    redirectTo: '/form',
+    component: FormPageComponent,
     pathMatch: 'full',
   },
+  {
+    path: '**',
+    redirectTo: '',
+  }
 ];
 
 @NgModule({

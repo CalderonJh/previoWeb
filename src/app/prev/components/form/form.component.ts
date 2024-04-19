@@ -42,7 +42,7 @@ export class FormComponent {
       !this.validarNombre() ||
       !this.validarCorreo() ||
       !this.validarTelefono()
-    ) return;
+    )
 
     this.router.navigate(['/card'], {
       queryParams: {
