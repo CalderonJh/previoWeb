@@ -19,6 +19,7 @@ export class FormComponent {
   @ViewChild('errorNombre') errorNombre!: ElementRef<HTMLParagraphElement>;
   @ViewChild('errorCorreo') errorCorreo!: ElementRef<HTMLParagraphElement>;
   @ViewChild('errorTelefono') errorTelefono!: ElementRef<HTMLParagraphElement>;
+  @ViewChild('errorGusto') errorGusto!: ElementRef<HTMLParagraphElement>;
   @ViewChild('submitBtn') submitBtn!: ElementRef<HTMLButtonElement>;
 
   editando: boolean = false;
@@ -42,7 +43,7 @@ export class FormComponent {
       !this.validarNombre() ||
       !this.validarCorreo() ||
       !this.validarTelefono()
-    )
+    ) return;
 
     this.router.navigate(['/card'], {
       queryParams: {
@@ -57,11 +58,36 @@ export class FormComponent {
   agregarGusto() {
     let value = this.tagInput.nativeElement.value;
     value = value.trim();
-    if (!value) return;
-
-    const porcentaje = parseInt(this.porcentajeInput.nativeElement.value) || 0;
-    if (porcentaje < 0 || porcentaje > 100) return;
-    if (this._gustos.find((gusto) => gusto.nombre === value)) return;
+    if (!value) {
+      this.mostrarError(
+        'Ingresa algo que te guste',
+        this.errorGusto.nativeElement,
+      );
+      return;
+    }
+    const porcentaje = parseInt(this.porcentajeInput.nativeElement.value);
+    if (isNaN(porcentaje)) {
+      this.mostrarError(
+        'Ingresa un porcentaje valido',
+        this.errorGusto.nativeElement,
+      );
+      return;
+    }
+    if (porcentaje < 0 || porcentaje > 100) {
+      this.mostrarError(
+        'Un valor entre 0 y 100',
+        this.errorGusto.nativeElement,
+      );
+      return;
+    }
+    if (this._gustos.find((gusto) => gusto.nombre === value)) {
+      this.mostrarError(
+        'El gusto ya existe',
+        this.errorGusto.nativeElement,
+      );
+      return;
+    }
+    this.mostrarError('', this.errorGusto.nativeElement);
     this._gustos.unshift({ nombre: value, porcentaje, esEditable: false });
     this.tagInput.nativeElement.value = '';
     this.porcentajeInput.nativeElement.value = '';

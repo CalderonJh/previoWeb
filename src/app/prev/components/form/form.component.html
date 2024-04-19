@@ -57,6 +57,7 @@
             Agregar
           </button>
         </div>
+        <p class="ml-3 text-red-500 text-xs mt-0.5" #errorGusto></p>
       </div>
     </div>
 
@@ -99,6 +100,8 @@
                   <input
                     *ngIf="gusto.esEditable"
                     type="number"
+                    max="100"
+                    min="0"
                     [value]="gusto.porcentaje"
                     [(ngModel)]="gusto.porcentaje"
                     class="w-full border p-1"
