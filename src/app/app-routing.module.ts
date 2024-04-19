@@ -13,8 +13,9 @@ const routes: Routes = [
     component: CardPageComponent,
   },
   {
-    path: '**',
+    path: '',
     redirectTo: '/form',
+    pathMatch: 'full',
   },
 ];
 
