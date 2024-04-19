@@ -1,6 +1,6 @@
 # Previo1web
 
-Click para ver el proyecto desplegado: [Previo1web](https://calderonjh.github.io/previoWeb/form)
+Click para ver el proyecto desplegado: [Previo1web](https://calderonjh.github.io/previoWeb)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.5.
 
