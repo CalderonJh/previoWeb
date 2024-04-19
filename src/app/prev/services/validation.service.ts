@@ -9,7 +9,10 @@ export class ValidationService {
     name = name.trim();
     if (!name) return "Escriba un nombre";
     if (/\d/.test(name)) return "El nombre no puede contener números";
+    if (!/^[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]*$/.test(name))
+      return "Solo letras y espacios son permitidos";
     if (name.length < 3) return "Nombre muy corto";
+    if (name.length > 20) return "Nombre muy largo";
     return this.NO_ERROR;
   };
 
