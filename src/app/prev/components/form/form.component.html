@@ -121,8 +121,11 @@
         </div>
       </div>
     </div>
+    <div class="bg-yellow-200 px-2 m-3 rounded flex justify-center" *ngIf="msgFlag">
+      Ya está editando un elemento
+    </div>
     <div class="flex justify-center mt-2 items-center gap-3 text-gray-800" *ngIf="editando">
-      Está editando algunos gustos, ¿desea guardar los cambios?
+      Está editando un gusto, ¿desea guardar los cambios?
       <span
         class="text-green-700 hover:text-green-800  font-bold cursor-pointer"
         (click)="guardarCambios()"
@@ -136,6 +139,7 @@
         No
       </span>
     </div>
+
     <div class="mt-4 w-full px-8">
       <button
         class="bg-green-700 right-0 mb-6 hover:bg-green-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm text-white px-4 py-2"

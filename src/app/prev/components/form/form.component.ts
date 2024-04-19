@@ -23,13 +23,12 @@ export class FormComponent {
   @ViewChild('submitBtn') submitBtn!: ElementRef<HTMLButtonElement>;
 
   editando: boolean = false;
+  msgFlag: boolean = false;
   nombre: string = '';
   correo: string = '';
   telefono: string = '';
 
-  _gustos: Gusto[] = [
-
-  ];
+  _gustos: Gusto[] = [];
 
   originalGustos: Gusto[] = [];
 
@@ -43,7 +42,8 @@ export class FormComponent {
       !this.validarNombre() ||
       !this.validarCorreo() ||
       !this.validarTelefono()
-    ) return;
+    )
+      return;
 
     this.router.navigate(['/card'], {
       queryParams: {
@@ -81,10 +81,7 @@ export class FormComponent {
       return;
     }
     if (this._gustos.find((gusto) => gusto.nombre === value)) {
-      this.mostrarError(
-        'El gusto ya existe',
-        this.errorGusto.nativeElement,
-      );
+      this.mostrarError('El gusto ya existe', this.errorGusto.nativeElement);
       return;
     }
     this.mostrarError('', this.errorGusto.nativeElement);
@@ -94,6 +91,13 @@ export class FormComponent {
   }
 
   onEdit(gusto: Gusto) {
+    if (this.editando) {
+      this.msgFlag = true;
+      setTimeout(() => {
+        this.msgFlag = false;
+      }, 5000);
+      return;
+    }
     gusto.esEditable = !gusto.esEditable;
     this.editando = true;
     this.submitBtn.nativeElement.disabled = true;
