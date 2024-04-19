@@ -9,3 +9,8 @@ input {
 button {
   @apply focus:outline-none;
 }
+
+body {
+  @apply bg-[#e8ecef];
+  @apply overflow-x-hidden;
+}

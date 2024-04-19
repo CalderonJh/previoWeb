@@ -1,49 +1,146 @@
 <div class="">
-  <form action="">
-    <span class="text-gray-800 justify-center flex mt-4"
-      >Formulario de afiliación</span
+  <form action="" (submit)="$event.preventDefault()">
+    <p class="text-gray-800 justify-center flex mt-4"
+      >Formulario de afiliación</p
     >
     <div class="">
-      <div class="mt-4 w-full px-8">
+      <div class="mt-4 w-full w-min-full px-8">
         <app-input-icon
           placeholder="Nombre completo"
           svgPath="assets/svg/user.svg"
           class="mt-4"
+          (emitter)="onNombreChange($event)"
+
         />
+        <p class="ml-3 text-red-500 text-xs mt-0.5" #errorNombre></p>
       </div>
       <div class="mt-4 w-full px-8">
         <app-input-icon
           placeholder="Correo electronico"
           svgPath="assets/svg/email.svg"
           class="mt-4"
+          (emitter)="onCorreoChange($event)"
         />
+        <p class="ml-3 text-red-500 text-xs mt-0.5" #errorCorreo></p>
       </div>
       <div class="mt-4 w-full px-8">
         <app-input-icon
           placeholder="Telefono"
           svgPath="assets/svg/phone.svg"
           class="mt-4"
+          (emitter)="onTelefonoChange($event)"
         />
+        <p class="ml-3 text-red-500 text-xs mt-0.5" #errorTelefono></p>
       </div>
       <div class="mt-4 px-8">
-        <div class="relative">
+        <div class="grid grid-cols-12">
           <input
             type="text"
-            id=""
-            class="block w-full pl-4 py-2 border rounded-lg focus:border-gray-900"
-            placeholder="Escribe algo que te guste"
-            required
+            class="col-span-7 w-full pl-4 py-2 border rounded-l-lg focus:border-gray-900"
+            placeholder="Algo que te guste"
+            #gustoInput
+            (keydown.enter)="$event.preventDefault()"
+          />
+          <input
+            type="text"
+            class="col-span-3 w-full pl-4 py-2 border focus:border-gray-900"
+            placeholder="Del 1 al 100"
+            (keydown.enter)="$event.preventDefault()"
+            #porcentajeInput
           />
 
           <button
-            type="submit"
-            class="text-white absolute right-0 top-0 h-full bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none font-medium rounded-r-lg text-sm px-4 py-2"
+            type="button"
+            class="col-span-2 text-white right-0 top-0 h-full bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none font-medium rounded-r-lg text-sm px-4 py-2"
+            (click)="agregarGusto()"
           >
             Agregar
           </button>
         </div>
-
       </div>
+    </div>
+
+    <div
+      class="mt-4 justify-center flex text-gray-600"
+      *ngIf="_gustos.length == 0"
+    >
+      No ha registrado gustos
+    </div>
+    <div class="grid grid-cols-3 w-full mt-7" *ngIf="_gustos.length > 0">
+      <div
+        class="col-span-1 bg-green-700 mx-8 justify-center items-center h-full m-auto flex rounded-lg"
+      >
+        <img src="assets/svg/flag.svg" alt="una bandera" />
+      </div>
+      <div class="col-span-2 border mr-4">
+        <div class="" >
+          <table class="w-full text-sm text-left overflow-x-auto">
+            <thead class="text-xs text-gray-700 uppercase bg-green-200">
+              <tr>
+                <th scope="col" class="px-6 py-3">Gusto</th>
+                <th scope="col" class="px-6 py-3">%</th>
+                <th scope="col" class="px-6 py-3 text-right">Editar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b" *ngFor="let gusto of _gustos">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900">
+                  <input
+                    *ngIf="gusto.esEditable"
+                    [value]="gusto.nombre"
+                    [(ngModel)]="gusto.nombre"
+                    name="nombre"
+                    type="text"
+                    class="w-full border p-1"
+                  />
+                  <span *ngIf="!gusto.esEditable">{{ gusto.nombre }}</span>
+                </th>
+                <td class="px-6 py-4 whitespace-normal word-break: break-word">
+                  <input
+                    *ngIf="gusto.esEditable"
+                    type="number"
+                    [value]="gusto.porcentaje"
+                    [(ngModel)]="gusto.porcentaje"
+                    class="w-full border p-1"
+                    name="porcentaje"
+                  />
+                  <span *ngIf="!gusto.esEditable">{{ gusto.porcentaje }}</span>
+                </td>
+                <td class="px-6 py-4 text-right  ">
+                  <button (click)="onEdit(gusto)" *ngIf="!gusto.esEditable" class="focus:border-2 p-1" >
+                    Editar
+                  </button>
+                  <span class="ml-2" *ngIf="gusto.esEditable" [ngClass]="{'text-red-500': gusto.esEditable}" >Editando</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-2 items-center gap-3 text-gray-800" *ngIf="editando">
+      Está editando algunos gustos, ¿desea guardar los cambios?
+      <span
+        class="text-green-700 hover:text-green-800  font-bold cursor-pointer"
+        (click)="guardarCambios()"
+      >
+        Sí
+      </span>
+      <span
+        class="text-red-700 hover:text-red-800  font-bold cursor-pointer"
+        (click)="cancelarEdicion()"
+      >
+        No
+      </span>
+    </div>
+    <div class="mt-4 w-full px-8">
+      <button
+        class="bg-green-700 right-0 mb-6 hover:bg-green-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm text-white px-4 py-2"
+        (click)="onSubmit()"
+        #submitBtn
+      >
+        HECHO
+      </button>
     </div>
   </form>
 </div>
